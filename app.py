@@ -7,9 +7,18 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask_sqlalchemy import SQLAlchemy
 
 
+def default_database_url() -> str:
+    """Use a writable SQLite location on Azure App Service Linux."""
+    if os.environ.get("WEBSITE_INSTANCE_ID") and os.environ.get("HOME"):
+        data_dir = os.path.join(os.environ["HOME"], "site", "data")
+        os.makedirs(data_dir, exist_ok=True)
+        return f"sqlite:///{os.path.join(data_dir, 'ecommerce.db')}"
+    return "sqlite:///ecommerce.db"
+
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///ecommerce.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", default_database_url())
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
