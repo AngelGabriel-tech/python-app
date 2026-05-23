@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.id }} | Northstar Shop{% endblock %}
+
+{% block content %}
+<section class="confirmation-card">
+  <span class="eyebrow">Order confirmed</span>
+  <h1>Thank you, {{ order.customer_name }}.</h1>
+  <p>Your order has been created and a receipt was sent to {{ order.email }}.</p>
+
+  <div class="confirmation-grid">
+    <div>
+      <strong>Order number</strong>
+      <span>#{{ order.id }}</span>
+    </div>
+    <div>
+      <strong>Total</strong>
+      <span>{{ order.total_cents | money }}</span>
+    </div>
+    <div>
+      <strong>Ship to</strong>
+      <span>{{ order.city }}, {{ order.country }}</span>
+    </div>
+  </div>
+
+  <div class="confirmation-items">
+    <h2>Items</h2>
+    {% for item in order.items %}
+      <div class="summary-line">
+        <span>{{ item.quantity }} × {{ item.product_name }}</span>
+        <strong>{{ item.subtotal_cents | money }}</strong>
+      </div>
+    {% endfor %}
+  </div>
+
+  <a class="button button-primary" href="{{ url_for('index') }}">Back to store</a>
+</section>
+{% endblock %}

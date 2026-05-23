@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Cart | Northstar Shop{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <span class="eyebrow">Shopping cart</span>
+  <h1>Your order</h1>
+  <p>Adjust quantities, review totals, and head to checkout when you are ready.</p>
+</section>
+
+{% if summary.items %}
+<form method="post" action="{{ url_for('update_cart') }}" class="cart-layout">
+  <div class="cart-list">
+    {% for item in summary.items %}
+      <article class="cart-item">
+        <div class="cart-item__visual" style="--accent: {{ item.product.accent }};">
+          <span>{{ item.product.badge }}</span>
+        </div>
+        <div class="cart-item__body">
+          <div>
+            <h2><a href="{{ url_for('product_detail', slug=item.product.slug) }}">{{ item.product.name }}</a></h2>
+            <p>{{ item.product.category }} · {{ item.product.price_cents | money }} each</p>
+          </div>
+          <div class="cart-item__controls">
+            <label>
+              Qty
+              <input type="number" name="qty_{{ item.product.id }}" min="0" value="{{ item.quantity }}">
+            </label>
+            <p>{{ item.line_total_cents | money }}</p>
+            <button type="submit" formaction="{{ url_for('remove_from_cart', product_id=item.product.id) }}" formmethod="post" class="text-link danger-link">Remove</button>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+  <aside class="summary-card">
+    <h2>Summary</h2>
+    <div class="summary-row"><span>Subtotal</span><strong>{{ summary.subtotal_cents | money }}</strong></div>
+    <div class="summary-row"><span>Shipping</span><strong>{{ summary.shipping_cents | money }}</strong></div>
+    <div class="summary-row"><span>Tax</span><strong>{{ summary.tax_cents | money }}</strong></div>
+    <div class="summary-row summary-row--total"><span>Total</span><strong>{{ summary.total_cents | money }}</strong></div>
+    <button type="submit" class="button button-secondary button-block">Update cart</button>
+    <a class="button button-primary button-block" href="{{ url_for('checkout') }}">Checkout</a>
+  </aside>
+</form>
+{% else %}
+<section class="empty-state">
+  <h2>Your cart is empty.</h2>
+  <p>Browse the catalog to add items and build an order.</p>
+  <a class="button button-primary" href="{{ url_for('index') }}">Start shopping</a>
+</section>
+{% endif %}
+{% endblock %}

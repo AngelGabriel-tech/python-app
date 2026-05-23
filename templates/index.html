@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Northstar Shop | Curated e-commerce demo{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Curated goods for focused living</div>
+    <h1>Sell products with a storefront that feels editorial, not generic.</h1>
+    <p>Northstar Shop is a lightweight e-commerce site built in Python with a polished catalog, cart, and checkout flow.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="#catalog">Browse catalog</a>
+      <a class="button button-secondary" href="{{ url_for('cart') }}">View cart</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>{{ products|length }}</strong><span>products</span></div>
+      <div><strong>{{ featured_products|length }}</strong><span>featured picks</span></div>
+      <div><strong>1</strong><span>fast checkout</span></div>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <div class="panel-card panel-card--large">
+      <span class="pill">Featured drop</span>
+      <h2>Everything in one clean purchase journey.</h2>
+      <p>Catalog pages, detailed product views, cart updates, and checkout confirmation are all wired together.</p>
+      <div class="panel-metrics">
+        <div>
+          <strong>Session cart</strong>
+          <span>client-side checkout state</span>
+        </div>
+        <div>
+          <strong>SQLite</strong>
+          <span>seeded inventory</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="featured" class="section-block">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">Featured</span>
+      <h2>Top picks</h2>
+    </div>
+    <p>Products highlighted for the homepage hero and quick discovery.</p>
+  </div>
+  <div class="product-grid product-grid--featured">
+    {% for product in featured_products %}
+      <article class="product-card" style="--accent: {{ product.accent }};">
+        <div class="product-visual">
+          <span>{{ product.badge }}</span>
+        </div>
+        <div class="product-body">
+          <div class="product-meta">
+            <span>{{ product.category }}</span>
+            <strong>{{ product.price_cents | money }}</strong>
+          </div>
+          <h3><a href="{{ url_for('product_detail', slug=product.slug) }}">{{ product.name }}</a></h3>
+          <p>{{ product.description }}</p>
+          <div class="product-actions">
+            <a class="text-link" href="{{ url_for('product_detail', slug=product.slug) }}">View details</a>
+            <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="button button-primary button-small">Add</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="categories" class="section-block">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">Categories</span>
+      <h2>Catalog</h2>
+    </div>
+    <p>Designed to make browsing feel broad without becoming cluttered.</p>
+  </div>
+  <div class="category-strip">
+    {% for category in categories %}
+      <span>{{ category }}</span>
+    {% endfor %}
+  </div>
+  <div id="catalog" class="product-grid">
+    {% for product in products %}
+      <article class="product-card" style="--accent: {{ product.accent }};">
+        <div class="product-visual">
+          <span>{{ product.badge }}</span>
+        </div>
+        <div class="product-body">
+          <div class="product-meta">
+            <span>{{ product.category }}</span>
+            <strong>{{ product.price_cents | money }}</strong>
+          </div>
+          <h3><a href="{{ url_for('product_detail', slug=product.slug) }}">{{ product.name }}</a></h3>
+          <p>{{ product.description }}</p>
+          <div class="product-actions">
+            <span class="stock">{{ product.inventory }} in stock</span>
+            <form method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="button button-primary button-small">Add</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

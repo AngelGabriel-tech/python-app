@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | Northstar Shop{% endblock %}
+
+{% block content %}
+<section class="detail-layout">
+  <div class="detail-visual" style="--accent: {{ product.accent }};">
+    <span>{{ product.badge }}</span>
+    <div>
+      <strong>{{ product.category }}</strong>
+      <p>{{ product.inventory }} available</p>
+    </div>
+  </div>
+  <div class="detail-copy">
+    <span class="eyebrow">{{ product.category }}</span>
+    <h1>{{ product.name }}</h1>
+    <p class="price">{{ product.price_cents | money }}</p>
+    <p>{{ product.description }}</p>
+    <form class="purchase-form" method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+      <label>
+        Quantity
+        <input type="number" name="quantity" min="1" max="10" value="1">
+      </label>
+      <button type="submit" class="button button-primary">Add to cart</button>
+    </form>
+    <div class="detail-notes">
+      <div>
+        <strong>Fast shipping</strong>
+        <span>ships in 2 to 4 business days</span>
+      </div>
+      <div>
+        <strong>Simple returns</strong>
+        <span>30-day return window</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if related_products %}
+<section class="section-block">
+  <div class="section-heading">
+    <div>
+      <span class="eyebrow">Related</span>
+      <h2>More from this category</h2>
+    </div>
+  </div>
+  <div class="product-grid product-grid--related">
+    {% for item in related_products %}
+      <article class="product-card" style="--accent: {{ item.accent }};">
+        <div class="product-visual">
+          <span>{{ item.badge }}</span>
+        </div>
+        <div class="product-body">
+          <div class="product-meta">
+            <span>{{ item.category }}</span>
+            <strong>{{ item.price_cents | money }}</strong>
+          </div>
+          <h3><a href="{{ url_for('product_detail', slug=item.slug) }}">{{ item.name }}</a></h3>
+          <p>{{ item.description }}</p>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

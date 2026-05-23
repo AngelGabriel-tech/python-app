@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | Northstar Shop{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+  <span class="eyebrow">Checkout</span>
+  <h1>Complete your order</h1>
+  <p>Enter shipping details and place the order to generate a confirmation page.</p>
+</section>
+
+<section class="checkout-layout">
+  <form method="post" class="checkout-form">
+    <div class="form-grid">
+      <label>
+        Full name
+        <input type="text" name="customer_name" placeholder="Avery Quinn" required>
+      </label>
+      <label>
+        Email
+        <input type="email" name="email" placeholder="avery@example.com" required>
+      </label>
+      <label class="span-2">
+        Address
+        <input type="text" name="address" placeholder="12 Harbor Street" required>
+      </label>
+      <label>
+        City
+        <input type="text" name="city" placeholder="Seattle" required>
+      </label>
+      <label>
+        Country
+        <input type="text" name="country" placeholder="United States" required>
+      </label>
+    </div>
+    <button type="submit" class="button button-primary">Place order</button>
+  </form>
+
+  <aside class="summary-card">
+    <h2>Order summary</h2>
+    {% for item in summary.items %}
+      <div class="summary-line">
+        <span>{{ item.quantity }} × {{ item.product.name }}</span>
+        <strong>{{ item.line_total_cents | money }}</strong>
+      </div>
+    {% endfor %}
+    <div class="summary-row"><span>Subtotal</span><strong>{{ summary.subtotal_cents | money }}</strong></div>
+    <div class="summary-row"><span>Shipping</span><strong>{{ summary.shipping_cents | money }}</strong></div>
+    <div class="summary-row"><span>Tax</span><strong>{{ summary.tax_cents | money }}</strong></div>
+    <div class="summary-row summary-row--total"><span>Total</span><strong>{{ summary.total_cents | money }}</strong></div>
+  </aside>
+</section>
+{% endblock %}
