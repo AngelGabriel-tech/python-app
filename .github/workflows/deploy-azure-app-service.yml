@@ -6,10 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-  id-token: write
-
 env:
   PYTHON_VERSION: '3.12'
   APP_SERVICE_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
@@ -33,13 +29,10 @@ jobs:
             echo "AZURE_WEBAPP_NAME secret is missing"
             exit 1
           fi
-
-      - name: Azure login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          if [ -z "${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}" ]; then
+            echo "AZURE_WEBAPP_PUBLISH_PROFILE secret is missing"
+            exit 1
+          fi
 
       - name: Install dependencies
         run: |
@@ -57,4 +50,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.APP_SERVICE_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: app.zip
